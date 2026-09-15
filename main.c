@@ -3,6 +3,7 @@
 #define MAXPATIENTS 100
 
 void patientRegistration();
+void bedAvailability ();
 
 char name[MAXPATIENTS][50];
 int age[MAXPATIENTS];
@@ -29,10 +30,12 @@ char wardName[4][50]={
 };
 int dailyBedRate[4]={3000,6000,12000,25000};
 int bedCapacity[4]={20,10,10,5};
+int bedOccupancy[4][20];
 
 int main()
 {
      int choice=0;
+     bedAvailability();
     do {
     printf("====================================\n");
     printf("      SMART HOSPITAL SYSTEM\n");
@@ -98,5 +101,18 @@ void patientRegistration()
     patientCount++;
 
     printf("Patient registration done.\n");
+}
+
+void bedAvailability()
+{
+    int i, j;
+    for (i=0;i<4;i++)
+    {
+        for (j=0;j<bedCapacity[i];j++)
+        {
+            bedOccupancy[i][j]=0;
+        }
+    }
+    
 }
 
