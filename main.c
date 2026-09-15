@@ -12,6 +12,24 @@ int admission[MAXPATIENTS];
 int ward[MAXPATIENTS];
 int days[MAXPATIENTS];
 int patientCount = 0;
+char specialtyName[4][50]={
+"General Practice(OPD)",
+"Paediatrics",
+"Cardiology",
+"Neurology"
+};
+int consultFee[4]={1500, 2500,4500,5000};
+int consultTime[4]={15,20,30,30};
+int dailyCap[4]={30,20,12,10};
+char wardName[4][50]={
+"General Ward",
+"Paediatric Ward",
+"Surgical Ward",
+"ICU(Intensive care unit)",
+};
+int dailyBedRate[4]={3000,6000,12000,25000};
+int bedCapacity[4]={20,10,10,5};
+
 int main()
 {
      int choice=0;
