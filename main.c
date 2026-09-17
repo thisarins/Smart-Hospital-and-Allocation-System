@@ -4,6 +4,8 @@
 
 void patientRegistration();
 void bedAvailability ();
+void bedStatusDisplay();
+
 
 char name[MAXPATIENTS][50];
 int age[MAXPATIENTS];
@@ -54,6 +56,7 @@ int main()
              patientRegistration();
              break;
         case 2:
+             bedStatusDisplay();
              break;
         case 3:
              break;
@@ -115,4 +118,26 @@ void bedAvailability()
     }
     
 }
+
+void bedStatusDisplay()
+{
+    int i=0,j=0;
+    printf("       Bed Status\n==============================\n");
+    for(i=0;i<4;i++)
+    {
+        printf("%s\n", wardName[i]);
+        for (j=0;j<bedCapacity[i];j++)
+        {
+         if (bedOccupancy[i][j]==0)
+         {
+             printf("Bed %2d : Available\n", j+1);
+         }
+         else
+         {
+             printf("Bed %2d: Unavailable\n", j+1);
+         }
+        }
+    }
+}
+
 
