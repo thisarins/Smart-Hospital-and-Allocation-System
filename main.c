@@ -5,6 +5,7 @@
 void patientRegistration();
 void bedAvailability ();
 void bedStatusDisplay();
+void selectBed();
 
 
 char name[MAXPATIENTS][50];
@@ -94,6 +95,8 @@ void patientRegistration()
         scanf("%d", &ward[patientCount]);
         printf("Enter admitted days:");
         scanf("%d", &days[patientCount]);
+        selectBed();
+
     }
     else
     {
@@ -139,5 +142,20 @@ void bedStatusDisplay()
         }
     }
 }
+void selectBed()
+{
+    int i;
+    for(i=0;i<bedCapacity[ward[patientCount]-1];i++)
+    {
+        if (bedOccupancy[ward [patientCount]-1][i]==0)
+        {
+            bedOccupancy[ward [patientCount] - 1][i]=1;
+            printf(" %d Bed Selected\n",i+1);
+            return;
+        }
+    }
+
+    printf("No Available Beds\n");
+    }
 
 
