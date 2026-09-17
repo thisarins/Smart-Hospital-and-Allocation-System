@@ -6,6 +6,7 @@ void patientRegistration();
 void bedAvailability ();
 void bedStatusDisplay();
 void selectBed();
+void estimateWaitingTime();
 
 
 char name[MAXPATIENTS][50];
@@ -84,14 +85,14 @@ void patientRegistration()
     scanf("%d", &age[patientCount]);
     printf("Enter urgency level (1-Normal, 2-Urgent, 3-Critical):");
     scanf("%d", &emergency[patientCount]);
-    printf("Enter specialty ID (1-4):");
+    printf("Enter specialty ID (1-OPD, 2-Paediatrics, 3-Cardiology, 4-Neurology):");
     scanf("%d", &specialtySelection[patientCount]);
     printf("Is the patient admitted? (1-Yes, 0-No):");
     scanf("%d", &admission[patientCount]);
 
     if(admission[patientCount] == 1)
     {
-        printf("Enter ward ID (1-4):");
+        printf("Enter ward ID (1-General, 2-paediatric, 3-surgical, 4-ICU):");
         scanf("%d", &ward[patientCount]);
         printf("Enter admitted days:");
         scanf("%d", &days[patientCount]);
@@ -103,7 +104,7 @@ void patientRegistration()
         ward[patientCount] = 0;
         days[patientCount] = 0;
     }
-
+     estimateWaitingTime();
     patientCount++;
 
     printf("Patient registration done.\n");
@@ -157,5 +158,22 @@ void selectBed()
 
     printf("No Available Beds\n");
     }
+ void estimateWaitingTime()
+    {
+        int i,currentQueue=0,currentSpecialty;
+        currentSpecialty=specialtySelection[patientCount];
+        for(i=0;i<patientCount;i++)
+        {
+            if(currentSpecialty==specialtySelection[i])
+            {
+                currentQueue++;
+            }
+        }
+        int waitingTime;
+        waitingTime = currentQueue*consultTime[currentSpecialty-1];
+        printf("Waiting Time in minutes: %d\n", waitingTime);
+    }
+
+
 
 
