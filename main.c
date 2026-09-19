@@ -8,6 +8,7 @@ void bedStatusDisplay();
 void selectBed();
 void estimateWaitingTime();
 void generateBill();
+void generateReport();
 
 
 char name[MAXPATIENTS][50];
@@ -65,6 +66,7 @@ int main()
         case 3:
              break;
         case 4:
+             generateReport();
              break;
         case 5:
             printf("Exiting program\n");
@@ -241,6 +243,87 @@ void generateBill()
     printf("Gross Bill               :LKR %.2f\n",grossBill);
     printf("Age Subsidy Discount     :LKR %-.2f\n",discount);
     printf("Final Payable Amount     :LKR %.2f\n",grossBill-discount);
+}
+void generateReport()
+{
+    int normal=0,urgent=0,critical=0,i,highestPatient,j;
+    double surcharge,wardFee,grossBill, discount,baseFee,finalBill;
+    double totalRevenue=0,totalDiscount=0,highestBill=0;
+    printf("    Performance Report\n------------------------------------\n");
+    printf("Total Patients  : %d\n", patientCount);
+
+    for(i=0;i<patientCount;i++)
+    {
+        if (emergency[i]==1){
+            normal++;
+        }
+        if (emergency[i]==2){
+            urgent++;
+        }
+        if (emergency[i]==3){
+            critical++;
+        }
+
+    }
+    for (i=0;i<patientCount;i++)
+    {
+          baseFee=consultFee[specialtySelection[i]-1];
+        if (emergency[i]==1){
+            surcharge=0;
+        }
+        if (emergency[i]==2){
+            surcharge=baseFee*0.2;
+        }
+        if (emergency[i]==3){
+            surcharge=baseFee*0.5;
+        }
+
+        if (admission[i]==1)
+            {
+             wardFee=days[i]*dailyBedRate[ward[i]-1];
+            }
+        else{
+            wardFee=0;
+        }
+
+         grossBill=baseFee+surcharge+wardFee;
+        if (age[i]<5||age[i]>65)
+        {
+            discount= grossBill*0.15;
+        }
+        else {
+            discount=0;
+        }
+        finalBill=grossBill-discount;
+
+        totalRevenue+=finalBill;
+        totalDiscount+=discount;
+        if (finalBill>highestBill){
+            highestBill=finalBill;
+            highestPatient=i;
+        }
+
+    }
+    printf("Number of Normal Patients    : %3d\n", normal);
+    printf("Number of Urgent Patients    : %3d\n", urgent);
+    printf("Number of Critical Patients  : %3d\n", critical);
+    printf("Total Revenue                : %.2f\n",totalRevenue);
+    printf("Total Discount               : %.2f\n",totalDiscount);
+    printf("Highest paying patient name  : %s\n",name[highestPatient]);
+    printf("Highest Bill                 : %.2f\n",highestBill);
+
+
+    for(i = 0; i < 4; i++)
+    {   int selected;
+        selected = 0;
+        for(j = 0; j < bedCapacity[i]; j++)
+        {
+            if(bedOccupancy[i][j] == 1){
+                selected++;
+            }
+        }
+printf("Bed Occupancy %15s: %.2f%%\n",wardName[i],(selected * 100.00) / bedCapacity[i]);
+    }
 }
 
 
