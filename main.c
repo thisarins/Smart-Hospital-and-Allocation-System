@@ -7,6 +7,7 @@ void bedAvailability ();
 void bedStatusDisplay();
 void selectBed();
 void estimateWaitingTime();
+void generateBill();
 
 
 char name[MAXPATIENTS][50];
@@ -17,6 +18,7 @@ int admission[MAXPATIENTS];
 int ward[MAXPATIENTS];
 int days[MAXPATIENTS];
 int patientCount = 0;
+int bedNo[MAXPATIENTS];
 char specialtyName[4][50]={
 "General Practice(OPD)",
 "Paediatrics",
@@ -104,6 +106,7 @@ void patientRegistration()
         ward[patientCount] = 0;
         days[patientCount] = 0;
     }
+     generateBill();
      estimateWaitingTime();
     patientCount++;
 
@@ -169,11 +172,76 @@ void selectBed()
                 currentQueue++;
             }
         }
-        int waitingTime;
+        float waitingTime;
         waitingTime = currentQueue*consultTime[currentSpecialty-1];
-        printf("Waiting Time in minutes: %d\n", waitingTime);
+        printf("Estimated Waiting Time   : %.2f\n", waitingTime);
     }
 
+void generateBill()
+{
+    double surcharge, baseFee,discount, wardFee;
+    printf("   SMART HOSPITAL ADMISSION & BILL\n===============================================\n");
+    printf("Patient ID               :PAT-%4d\n",1000+patientCount);
+    printf("Patient Name             :%s\n",name[patientCount]);
+
+
+    if (age[patientCount]<5||age[patientCount]>65){
+        printf("Patient Age              :%d (15%%Subsidy Eligible)\n", age[patientCount]);
+    }
+    else{
+        printf("Patient Age              :%d\n", age[patientCount]);
+    }
+    printf("Specialty                :%s\n",specialtyName[specialtySelection[patientCount]-1]);
+
+
+    if (admission[patientCount]==1){
+        printf("Assigned Ward            :%s (Bed %2d)\n",wardName[ward[patientCount]-1],bedNo[patientCount]);
+        wardFee=days[patientCount]*dailyBedRate[ward[patientCount]-1];
+    }
+
+    else{
+        printf("Assigned Ward            :Not admitted\n");
+        wardFee=0;
+    }
+
+     baseFee=consultFee[specialtySelection[patientCount]-1];
+    if (emergency[patientCount]==1){
+        printf("Urgency Level            :Level 1 (Normal)\n");
+        surcharge=0;
+    }
+    else  if (emergency[patientCount]==2){
+        printf("Urgency Level            :Level 2 (Urgent)\n");
+        surcharge=baseFee*0.2;
+    }
+    else{
+        printf("Urgency Level            :Level 3 (Critical)\n");
+        surcharge=baseFee*0.5;
+    }
+
+    double grossBill=baseFee+surcharge+wardFee;
+    if (age[patientCount]<5||age[patientCount]>65){
+        discount=grossBill*0.15;
+    }
+
+    printf("\n------------------------------------------------\n");
+    printf("Base Counsultation Fee   :LKR %.2f\n",baseFee);
+    if (emergency[patientCount]==1){
+    printf("Emergency Surcharge      :LKR %.2f(0%%)\n",surcharge);
+    }
+    else if (emergency[patientCount]==2)
+    {
+      printf("Emergency Surcharge      :LKR %.2f(20%%)\n",surcharge);
+    }
+    else {
+        printf("Emergency Surcharge      :LKR %.2f(50%%)\n",surcharge);
+    }
+
+    printf("Ward Stay Cost(%d Days)   :LKR %.2f\n",days[patientCount],wardFee);
+    printf("\n------------------------------------------------\n");
+    printf("Gross Bill               :LKR %.2f\n",grossBill);
+    printf("Age Subsidy Discount     :LKR %-.2f\n",discount);
+    printf("Final Payable Amount     :LKR %.2f\n",grossBill-discount);
+}
 
 
 
