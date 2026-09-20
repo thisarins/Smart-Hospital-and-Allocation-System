@@ -12,6 +12,7 @@ void generateReport();
 void emergencyPriority();
 void loadBedOccupancyStatus();
 void saveBedOccupancyStatus();
+void savePatientRecord();
 
 
 char name[MAXPATIENTS][50];
@@ -114,6 +115,7 @@ void patientRegistration()
     }
      generateBill();
      estimateWaitingTime();
+     savePatientRecord();
     patientCount++;
 
     printf("Patient registration done.\n");
@@ -329,6 +331,7 @@ void generateReport()
         }
 printf("Bed Occupancy %15s: %.2f%%\n",wardName[i],(selected * 100.00) / bedCapacity[i]);
     }
+}
      
  void emergencyPriority()
 {
@@ -361,8 +364,6 @@ printf("Bed Occupancy %15s: %.2f%%\n",wardName[i],(selected * 100.00) / bedCapac
       printf("Urgency Level: %d\n",emergency[order[i]]);
       printf("Specialty    : %s\n",specialtyName[specialtySelection[order[i]] - 1]);
     }
-
-}
 
 }
 
@@ -405,4 +406,31 @@ void saveBedOccupancyStatus()
     fclose(file);
     printf("BED STATUS SAVED");
 }
+void savePatientRecord()
+{
+    FILE *file;
+    file = fopen("patient_records.txt", "a");
+     if(file == NULL){
+        printf("Unable to save patient record.\n");
+        return;
+    }
+
+    fprintf(file,"Patient ID     : PAT-%04d\n", 1000+patientCount);
+    fprintf(file,"Patient Name   : %s\n", name[patientCount]);
+    fprintf(file,"Age            : %d\n", age[patientCount]);
+    fprintf(file,"Urgency Level  : %d\n", emergency[patientCount]);
+    fprintf(file,"Specialty      : %s\n",
+            specialtyName[specialtySelection[patientCount] - 1]);
+
+    if(admission[patientCount]==1){
+        fprintf(file, "Ward           : %s\n",wardName[ward[patientCount] - 1]);
+        fprintf(file, "Days           : %d\n", days[patientCount]);
+    }
+    else{
+        fprintf(file, "Ward           : Not admitted\n");
+    }
+     fclose(file);
+}
+
+
 
