@@ -10,6 +10,8 @@ void estimateWaitingTime();
 void generateBill();
 void generateReport();
 void emergencyPriority();
+void loadBedOccupancyStatus();
+void saveBedOccupancyStatus();
 
 
 char name[MAXPATIENTS][50];
@@ -43,7 +45,7 @@ int bedOccupancy[4][20];
 int main()
 {
      int choice=0;
-     bedAvailability();
+    loadBedOccupancyStatus();
     do {
     printf("====================================\n");
     printf("      SMART HOSPITAL SYSTEM\n");
@@ -158,6 +160,7 @@ void selectBed()
         if (bedOccupancy[ward [patientCount]-1][i]==0)
         {
             bedOccupancy[ward [patientCount] - 1][i]=1;
+            saveBedOccupancyStatus();
             printf(" %d Bed Selected\n",i+1);
             return;
         }
@@ -363,5 +366,43 @@ printf("Bed Occupancy %15s: %.2f%%\n",wardName[i],(selected * 100.00) / bedCapac
 
 }
 
+void loadBedOccupancyStatus()
+{
+    FILE*file;
+    file=fopen("BED STATUS.txt","r");
+    if(file==NULL){
+        bedAvailability();
+         return;
+    }
+    int i,j;
+    for (i=0;i<4;i++)
+    {
+        for (j=0;j<bedCapacity[i];j++)
+        {
+            fscanf(file,"%d",&bedOccupancy[i][j]);
+        }
+    }
+    fclose(file);
+}
+void saveBedOccupancyStatus()
+{
+    FILE*file;
 
+    file=fopen("BED STATUS.txt", "w");
+    if (file==NULL){
+        printf("Can't save bed statu\n");
+        return;
+    }
+    int i,j;
+    for(i=0;i<4;i++)
+    {
+        for(j=0;j<bedCapacity[i];j++)
+        {
+            fprintf(file,"%d", bedOccupancy[i][j]);
+        }
+        fprintf(file,"\n");
+    }
+    fclose(file);
+    printf("BED STATUS SAVED");
+}
 
