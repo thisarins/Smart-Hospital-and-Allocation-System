@@ -9,6 +9,7 @@ void selectBed();
 void estimateWaitingTime();
 void generateBill();
 void generateReport();
+void emergencyPriority();
 
 
 char name[MAXPATIENTS][50];
@@ -64,6 +65,7 @@ int main()
              bedStatusDisplay();
              break;
         case 3:
+             emergencyPriority();
              break;
         case 4:
              generateReport();
@@ -324,6 +326,41 @@ void generateReport()
         }
 printf("Bed Occupancy %15s: %.2f%%\n",wardName[i],(selected * 100.00) / bedCapacity[i]);
     }
+     
+ void emergencyPriority()
+{
+    int order[MAXPATIENTS],i, j, temp;
+
+    for(i=0;i<patientCount;i++)
+    {
+        order[i]=i;
+    }
+
+    for(i=0;i<patientCount-1;i++)
+    {
+        for(j=0;j<patientCount-i-1;j++)
+        {
+            if(emergency[order[j]]<emergency[order[j+1]])
+            {
+                temp=order[j];
+                order[j]=order[j+1];
+                order[j+1]=temp;
+            }
+        }
+    }
+
+    printf("       EMERGENCY PRIORITY\n");
+    printf("====================================\n");
+    for(i=0;i<patientCount;i++)
+    {
+      printf("Patient Name : %s\n",name[order[i]]);
+      printf("Age          : %d\n",age[order[i]]);
+      printf("Urgency Level: %d\n",emergency[order[i]]);
+      printf("Specialty    : %s\n",specialtyName[specialtySelection[order[i]] - 1]);
+    }
+
+}
+
 }
 
 
